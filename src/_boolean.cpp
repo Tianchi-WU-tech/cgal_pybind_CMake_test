@@ -1,12 +1,13 @@
-#include"_boolean.h"
+#include <pybind11/pybind11.h>
+#include "_boolean.h"
 #include <iostream>
 #include <sstream>
 #include <fstream>
 
+namespace py = pybind11;
 using std::string;
 using std::cout;
 using std::endl;
-
 
 void OutputNefPolyhedron(const Nef_polyhedron& nef, string strOutFilePath)
 {
@@ -18,7 +19,7 @@ void OutputNefPolyhedron(const Nef_polyhedron& nef, string strOutFilePath)
     out.close();
 }
 
-void boolean_cgal(const string& boolean_type,const string& file_path_a, const string& file_path_b, const string& output_file)
+void boolean_cgal(const int& boolean_type, const string& file_path_a, const string& file_path_b, const string& output_file)
 {
     // assign two objects from input
     Polyhedron object_1, object_2;
@@ -34,28 +35,31 @@ void boolean_cgal(const string& boolean_type,const string& file_path_a, const st
     // Boolean manipulation
     switch (boolean_type)
     {
-    case "diff":
+    case 0:
     {
         Nef_polyhedron nefDifference = nef1 - nef2;
         string diff_name_suffix = "_diff.off";
         string diff_name = output_file + diff_name_suffix;
         OutputNefPolyhedron(nefDifference, diff_name);
+        //cout << "diff done" << endl;
         break;
     }
-    case "union":
+    case 1:
     {
         Nef_polyhedron nefUnion = nef1 + nef2;
         string union_name_suffix = "_union.off";
         string union_name = output_file + union_name_suffix;
         OutputNefPolyhedron(nefUnion, union_name);
+        //cout << "union done" << endl;
         break;
     }
-    case "intersect":
+    case 2:
     {
         Nef_polyhedron nefIntersect = nef1 * nef2;
         string intersect_name_suffix = "_intersect.off";
         string intersect_name = output_file + intersect_name_suffix;
         OutputNefPolyhedron(nefIntersect, intersect_name);
+        //cout << "intersect done" << endl;
         break;
     }
     // unavailable boolean type is called
@@ -64,3 +68,14 @@ void boolean_cgal(const string& boolean_type,const string& file_path_a, const st
     }
 }
 
+//int main()
+//{
+//    boolean_cgal(0, "C:/Users/Wuuu1/Desktop/cld_01.stl", "C:/Users/Wuuu1/Desktop/cld_03.stl", "a");
+//}
+
+PYBIND11_MODULE(cgal_pybind11, m)
+{
+    m.doc() = "The CGAL test";
+    m.def("boolean_cgal", &boolean_cgal, "bool", py::arg("boolean_type"),
+        py::arg("file_path_a"), py::arg("file_path_b"), py::arg("output_file"));
+}

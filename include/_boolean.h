@@ -1,6 +1,6 @@
 #ifndef _BOOLEAN_CGAL
 #define _BOOLEAN_CGAL
-#include <CGAL/Exact_predicates_exact_constructions_kernel.h>
+#include "cgal/Exact_predicates_exact_constructions_kernel.h"
 #include <CGAL/Polyhedron_3.h>
 #include <CGAL/Surface_mesh.h>
 #include <CGAL/Nef_polyhedron_3.h>
